@@ -1,0 +1,35 @@
+Protocoale de comunicatie - Tema 1
+
+Mihu Florin - 324CC
+
+    La inceput, se citeste din fisier linie cu linie si se adauga in fiecare 
+camp al structurii rtable_entry, cu ajutorul functiei strtok ce desparte linia 
+dupa caracterul ' ', aceasta fiind adaugata ulterior in vectorul de intrari. 
+Vectorul rtable se aloca dinamic pe parcursul citirii din fisier.
+    Se sorteaza tabela de rutare cu ajutorul functiei qsort din biblioteca C, 
+cu ajutorul functiei comparator, ce ordoneaza elementele din vector dupa 
+prefix, in ordine crescatoare. Daca doua elemente au acelasi prefix, atunci ele 
+se ordoneaza dupa masca.
+    Se aloca spatiu pentru tabela ARP, iar apoi, aceasta se parseaza.
+    Intr-o bucla infinita se implementeaza procesul de dirijare. Initial, se 
+extrag headerele ethernet, IP si ICMP. Apoi, se verifica valoarea sumei de 
+control a headerului IP. Daca ttl-ul pachetului devine mai mic sau egal cu 1, 
+atunci se creeaza un nou pachet de tip ICMP_TIME_EXCEEDED ce urmeaza a fi 
+trimis catre adresa de la care a venit. Se creeaza un nou pachet, cu aceeasi 
+interfata cu cea a pachetului vechi, se interschimba adresele sursa si 
+destinatie ale headerelor IP si ethernet. Se verifica si checksum-urile 
+headerelor IP si ICMP, apoi se seteaza tipul ICMP_TIME_EXCEEDED. In final, se 
+trimite pachetul.
+    Apoi, se cauta cea mai buna ruta pe care trebuie trimis pachetul. Daca 
+aceasta nu exista, atunci se creeaza si se trimite un nou pachet de tip 
+ICMP_DEST_UNREACH catre aderesa de la care a venit.
+    Dupa aceea, se verifica daca pachetul primit este pentru router. Dupa ce se 
+verifica daca destinatia este pentru una dintre interfetele routerului, se 
+trimite un nou pachet de tip ICMP_ECHOREPLY. Dupa trimiterea acestui pachet, se 
+continua bucla infinita.
+    Daca totul este in regula pana aici, se decrementeaza ttl-ul si apoi se 
+recalculeaza checksum-ul.
+    Dupa aceea, se verifica daca s-a gasit o adresa MAC potrivita. Daca nu a 
+fost gasita, atunci se continua bucla infinita, in caz contrar, se actualizeaza headerul de ethernet.
+    In cele din urma, daca toate operatiile au fost efectuate cu succes, se 
+trimite pachetul si se reia bucla.
